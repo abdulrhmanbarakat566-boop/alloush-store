@@ -1,0 +1,308 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إدارة علوش</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f7f3ec;
+  color: #38251c;
+}
+
+header {
+  background: #38251c;
+  color: white;
+  padding: 24px 18px;
+}
+
+header h1 {
+  color: #e8c58a;
+  font-size: 26px;
+}
+
+header p {
+  margin-top: 8px;
+  color: #e9d9c6;
+}
+
+.container {
+  max-width: 650px;
+  margin: auto;
+  padding: 20px 15px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 3px 15px #0000000b;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin: 15px 0 8px;
+  font-weight: bold;
+}
+
+input, select {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #dfd2c1;
+  border-radius: 10px;
+  font-size: 15px;
+  background: white;
+}
+
+button {
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.add {
+  background: #75472e;
+  color: white;
+  width: 100%;
+  margin-top: 22px;
+}
+
+.photo {
+  background: #f1e7d9;
+  padding: 20px;
+  text-align: center;
+  border-radius: 12px;
+  margin-top: 12px;
+}
+
+#preview {
+  max-width: 100%;
+  max-height: 180px;
+  display: none;
+  margin: 12px auto;
+  border-radius: 10px;
+}
+
+.product {
+  border: 1px solid #eee0ce;
+  border-radius: 12px;
+  padding: 15px;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.product img {
+  width: 65px;
+  height: 65px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.product-info {
+  flex: 1;
+}
+
+.price {
+  color: #95602f;
+  margin-top: 6px;
+  font-weight: bold;
+}
+
+.delete {
+  background: #fbe5e2;
+  color: #a52b20;
+  padding: 10px;
+}
+
+.note {
+  color: #806d5c;
+  font-size: 13px;
+  line-height: 1.7;
+  margin-top: 12px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>ALLOUSH STORE</h1>
+  <p>لوحة إدارة المنتجات والأسعار</p>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>➕ إضافة منتج جديد</h2>
+
+    <label>اسم المنتج</label>
+    <input id="name" placeholder="مثال: شوكولاتة Milka">
+
+    <label>سعر المنتج بالجنيه</label>
+    <input id="price" type="number" placeholder="مثال: 150">
+
+    <label>رقم الباركود (اختياري)</label>
+    <input id="barcode" placeholder="امسح أو اكتب الباركود">
+
+    <label>قسم المنتج</label>
+    <select id="category">
+      <option value="chocolate">شوكولاتة</option>
+      <option value="snacks">سناكس</option>
+      <option value="drinks">مشروبات</option>
+      <option value="food">مواد غذائية</option>
+    </select>
+
+    <label>صورة المنتج</label>
+    <div class="photo">
+      <input type="file" id="image"
+        accept="image/*" capture="environment">
+      <img id="preview">
+    </div>
+
+    <button class="add" onclick="addProduct()">
+      حفظ المنتج
+    </button>
+
+    <p class="note">
+      هذه نسخة تجريبية تحفظ البيانات على الجهاز فقط.
+      هنربطها بقاعدة بيانات سحابية في المرحلة القادمة.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>📦 المنتجات المسجلة</h2>
+    <div id="productList"></div>
+  </div>
+
+</div>
+
+<script>
+let products = JSON.parse(
+  localStorage.getItem("alloushProducts") || "[]"
+);
+
+let photoData = "";
+
+document.getElementById("image").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(event) {
+    photoData = event.target.result;
+    document.getElementById("preview").src = photoData;
+    document.getElementById("preview").style.display = "block";
+  };
+
+  reader.readAsDataURL(file);
+});
+
+function addProduct() {
+  const name = document.getElementById("name").value.trim();
+  const price = Number(document.getElementById("price").value);
+  const barcode = document.getElementById("barcode").value.trim();
+  const category = document.getElementById("category").value;
+
+  if (!name || !price || price <= 0) {
+    alert("اكتب اسم المنتج وسعر صحيح");
+    return;
+  }
+
+  products.push({
+    id: Date.now(),
+    name,
+    price,
+    barcode,
+    category,
+    image: photoData
+  });
+
+  localStorage.setItem(
+    "alloushProducts",
+    JSON.stringify(products)
+  );
+
+  document.getElementById("name").value = "";
+  document.getElementById("price").value = "";
+  document.getElementById("barcode").value = "";
+  document.getElementById("image").value = "";
+  document.getElementById("preview").style.display = "none";
+  photoData = "";
+
+  showProducts();
+  alert("تم تسجيل المنتج في النسخة التجريبية");
+}
+
+function showProducts() {
+  const list = document.getElementById("productList");
+
+  list.innerHTML = "";
+
+  if (products.length === 0) {
+    list.innerHTML = "<p>لا توجد منتجات حتى الآن</p>";
+    return;
+  }
+
+  products.forEach(product => {
+    const div = document.createElement("div");
+    div.className = "product";
+
+    const img = document.createElement("img");
+    img.src = product.image || "";
+    img.alt = product.name;
+
+    const info = document.createElement("div");
+    info.className = "product-info";
+
+    const title = document.createElement("strong");
+    title.textContent = product.name;
+
+    const price = document.createElement("div");
+    price.className = "price";
+    price.textContent = product.price + " جنيه";
+
+    info.append(title, price);
+
+    const del = document.createElement("button");
+    del.className = "delete";
+    del.textContent = "حذف";
+
+    del.onclick = function() {
+      if (confirm("هل تريد حذف المنتج؟")) {
+        products = products.filter(p => p.id !== product.id);
+        localStorage.setItem("alloushProducts", JSON.stringify(products));
+        showProducts();
+      }
+    };
+
+    div.append(img, info, del);
+    list.appendChild(div);
+  });
+}
+
+showProducts();
+</script>
+
+</body>
+</html>

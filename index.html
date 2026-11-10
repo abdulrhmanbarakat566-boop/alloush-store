@@ -1,0 +1,419 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALLOUSH STORE | علوش</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #faf7f1;
+  color: #38251c;
+}
+
+header {
+  background: #38251c;
+  color: white;
+  padding: 22px 18px;
+  text-align: center;
+}
+
+.logo {
+  font-size: 30px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  color: #e8c58a;
+}
+
+header p {
+  margin-top: 8px;
+  color: #eee0cc;
+  font-size: 14px;
+}
+
+.hero {
+  padding: 35px 20px;
+  text-align: center;
+  background: linear-gradient(135deg, #4b2e20, #795137);
+  color: white;
+}
+
+.hero h1 {
+  font-size: 25px;
+  margin-bottom: 12px;
+}
+
+.hero p {
+  color: #f0dfc9;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.container {
+  padding: 22px 16px;
+  max-width: 700px;
+  margin: auto;
+}
+
+.search {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid #ddcbb5;
+  border-radius: 12px;
+  font-size: 14px;
+  outline: none;
+}
+
+.search button, .scan {
+  background: #75472e;
+  color: white;
+  border: none;
+  padding: 13px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.scan {
+  width: 100%;
+  font-size: 16px;
+  margin-bottom: 25px;
+}
+
+h2 {
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.categories {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.category {
+  background: white;
+  border: 1px solid #eadfce;
+  border-radius: 14px;
+  padding: 20px 10px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.category span {
+  display: block;
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.product {
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #eee3d5;
+  text-align: center;
+  padding-bottom: 15px;
+}
+
+.product .photo {
+  background: #f0e6d8;
+  padding: 25px 5px;
+  font-size: 45px;
+}
+
+.product h3 {
+  font-size: 15px;
+  margin: 12px 5px 8px;
+}
+
+.price {
+  color: #94602f;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 25px;
+  color: #806d5c;
+}
+
+footer {
+  text-align: center;
+  padding: 25px;
+  margin-top: 35px;
+  background: #38251c;
+  color: #eee0cc;
+  font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">ALLOUSH</div>
+  <p>علوش للمواد الغذائية والشوكولاتة المستوردة</p>
+</header>
+
+<section class="hero">
+  <h1>أهلاً بيك في علوش 🍫</h1>
+  <p>اكتشف منتجاتنا واعرف أسعارها بسهولة</p>
+</section>
+
+<main class="container">
+
+  <div class="search">
+    <input id="searchInput"
+type="text"
+placeholder="ابحث بالاسم أو الباركود..."
+oninput="searchProducts()">
+    <button type="button" onclick="searchProducts()">
+بحث
+    </button>
+  </div>
+
+  <button class="scan" onclick="startBarcodeScanner()">
+📷 امسح الباركود
+  </button>
+  <div id="scannerBox" style="display:none; text-align:center; margin:15px 0;">
+  <video id="scannerVideo" autoplay playsinline
+    style="width:100%; max-width:400px; border-radius:12px;">
+  </video>
+  <button onclick="stopBarcodeScanner()">إغلاق الكاميرا</button>
+  </div>
+  <h2>أقسام المنتجات</h2>
+
+  <div class="categories">
+    <div class="category" onclick="filterProducts('chocolate')">
+      <span>🍫</span>
+      شوكولاتة
+    </div>
+
+    <div class="category" onclick="filterProducts('snacks')">
+      <span>🍿</span>
+      سناكس
+    </div>
+
+    <div class="category" onclick="filterProducts('drinks')">
+      <span>🥤</span>
+      مشروبات
+    </div>
+
+    <div class="category" onclick="filterProducts('food')">
+      <span>🛒</span>
+      مواد غذائية
+    </div>
+  </div>
+
+  <h2>منتجاتنا</h2>
+
+  <div class="products" id="products">
+
+    <div class="product" data-category="chocolate">
+      <div class="photo">🍫</div>
+      <h3>شوكولاتة مستوردة</h3>
+      <div class="price">150 جنيه</div>
+    </div>
+
+    <div class="product" data-category="chocolate">
+      <div class="photo">🍬</div>
+      <h3>حلويات شوكولاتة</h3>
+      <div class="price">90 جنيه</div>
+    </div>
+
+    <div class="product" data-category="snacks">
+      <div class="photo">🍿</div>
+      <h3>سناكس</h3>
+      <div class="price">45 جنيه</div>
+    </div>
+
+    <div class="product" data-category="drinks">
+      <div class="photo">🥤</div>
+      <h3>مشروبات</h3>
+      <div class="price">35 جنيه</div>
+    </div>
+
+  </div>
+
+</main>
+
+<footer>
+  ALLOUSH STORE
+  <p>جميع الحقوق محفوظة © 2026</p>
+</footer>
+
+<script>
+function searchProducts() {
+    const input = document.getElementById("searchInput");
+    const value = input.value.trim().toLowerCase();
+
+    const products = document.querySelectorAll(".product");
+
+    products.forEach(product => {
+        const text = product.textContent.toLowerCase();
+        const barcode = (product.dataset.barcode || "").toLowerCase();
+
+        product.style.display =
+            (text.includes(value) || barcode.includes(value))
+            ? "block"
+            : "none";
+    });
+}
+
+function filterProducts(category) {
+    const products = document.querySelectorAll(".product");
+
+    products.forEach(product => {
+        product.style.display =
+            product.dataset.category === category
+            ? "block"
+            : "none";
+    });
+  }
+</script>
+  
+<script>
+function loadAlloushProducts() {
+    const saved = JSON.parse(
+        localStorage.getItem("alloushProducts") || "[]"
+    );
+  
+    const container = document.getElementById("products");
+
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    saved.forEach(product => {
+        const card = document.createElement("div");
+        card.className = "product";
+        card.dataset.category = product.category || "";
+card.dataset.barcode = product.barcode || "";
+        const photo = document.createElement("div");
+        photo.className = "photo";
+
+        if (product.image) {
+            const img = document.createElement("img");
+            img.src = product.image;
+            img.alt = product.name;
+            img.style.width = "100%";
+            img.style.height = "100%";
+            img.style.objectFit = "contain";
+            photo.appendChild(img);
+        } else {
+            photo.textContent = "🍫";
+        }
+const barcodeText = document.createElement("p");
+barcodeText.textContent = "الباركود: " + (product.barcode || "غير مسجل");
+barcodeText.className = "barcode";
+        const name = document.createElement("h3");
+        name.textContent = product.name;
+
+        const price = document.createElement("div");
+        price.className = "price";
+        price.textContent = product.price + " جنيه";
+
+        card.appendChild(photo);
+card.appendChild(name);
+card.appendChild(barcodeText);
+card.appendChild(price);
+
+        container.appendChild(card);
+    });
+}
+
+loadAlloushProducts();
+
+    let scannerStream = null;
+let scannerActive = false;
+
+async function startBarcodeScanner() {
+  const video = document.getElementById("scannerVideo");
+  const box = document.getElementById("scannerBox");
+
+  if (!("BarcodeDetector" in window)) {
+    alert("المتصفح لا يدعم قارئ الباركود.");
+    return;
+  }
+
+  try {
+    const detector = new BarcodeDetector({
+      formats: ["ean_13", "ean_8", "upc_a", "upc_e", "code_128", "code_39"]
+    });
+
+    scannerStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: "environment" }
+    });
+
+    video.srcObject = scannerStream;
+    box.style.display = "block";
+    scannerActive = true;
+
+    await video.play();
+
+    async function scan() {
+      if (!scannerActive) return;
+
+      try {
+        const codes = await detector.detect(video);
+
+        if (codes.length > 0) {
+          document.getElementById("searchInput").value =
+            codes[0].rawValue;
+
+          stopBarcodeScanner();
+          searchProducts();
+          return;
+        }
+      } catch (e) {}
+
+      if (scannerActive) {
+        requestAnimationFrame(scan);
+      }
+    }
+
+    scan();
+
+  } catch (error) {
+    alert("تعذر تشغيل الكاميرا. تأكد من السماح باستخدامها.");
+  }
+}
+
+function stopBarcodeScanner() {
+  scannerActive = false;
+
+  if (scannerStream) {
+    scannerStream.getTracks().forEach(track => track.stop());
+    scannerStream = null;
+  }
+
+  document.getElementById("scannerVideo").srcObject = null;
+  document.getElementById("scannerBox").style.display = "none";
+}
+ </script>
+</body>
+</html>
