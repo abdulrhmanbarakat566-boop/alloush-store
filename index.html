@@ -297,22 +297,30 @@ function filterProducts(category) {
 </script>
   
 <script>
-function loadAlloushProducts() {
-    const saved = JSON.parse(
-        localStorage.getItem("alloushProducts") || "[]"
-    );
-  
+
+async function loadAlloushProducts() {
     const container = document.getElementById("products");
 
     if (!container) return;
 
     container.innerHTML = "";
 
-    saved.forEach(product => {
+    const { data, error } = await supabase
+        .from("products")
+        .select("*");
+
+    if (error) {
+        console.error("Supabase Error:", error);
+        container.textContent = "تعذر تحميل المنتجات";
+        return;
+    }
+
+    data.forEach(product => {
         const card = document.createElement("div");
         card.className = "product";
         card.dataset.category = product.category || "";
-card.dataset.barcode = product.barcode || "";
+        card.dataset.barcode = product.barcode || "";
+
         const photo = document.createElement("div");
         photo.className = "photo";
 
@@ -327,9 +335,7 @@ card.dataset.barcode = product.barcode || "";
         } else {
             photo.textContent = "🍫";
         }
-const barcodeText = document.createElement("p");
-barcodeText.textContent = "الباركود: " + (product.barcode || "غير مسجل");
-barcodeText.className = "barcode";
+
         const name = document.createElement("h3");
         name.textContent = product.name;
 
@@ -338,16 +344,13 @@ barcodeText.className = "barcode";
         price.textContent = product.price + " جنيه";
 
         card.appendChild(photo);
-card.appendChild(name);
-card.appendChild(barcodeText);
-card.appendChild(price);
+        card.appendChild(name);
+        card.appendChild(price);
 
         container.appendChild(card);
     });
-}
-
-loadAlloushProducts();
-
+  }
+  
     let scannerStream = null;
 let scannerActive = false;
 
@@ -427,6 +430,7 @@ const supabase = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
+  loadAlloushProducts();
 </script>
   
 </body>
