@@ -126,7 +126,13 @@ button {
   margin-top: 6px;
   font-weight: bold;
 }
-
+.barcode {
+  color: #777;
+  font-size: 13px;
+  margin-top: 6px;
+  direction: ltr;
+  text-align: right;
+}
 .delete {
   background: #fbe5e2;
   color: #a52b20;
@@ -282,7 +288,15 @@ function showProducts() {
     price.className = "price";
     price.textContent = product.price + " جنيه";
 
-    info.append(title, price);
+    const barcodeText = document.createElement("div");
+barcodeText.className = "barcode";
+
+barcodeText.textContent = product.barcode
+  ? "الباركود: " + product.barcode
+  : "لا يوجد باركود";
+
+info.append(title, price, barcodeText);
+
 
     const del = document.createElement("button");
     del.className = "delete";
