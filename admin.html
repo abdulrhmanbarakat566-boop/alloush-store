@@ -310,7 +310,11 @@ info.append(title, price, barcodeText);
       }
     };
 
-    div.append(img, info, del);
+    if (product.image) {
+  div.append(img);
+}
+
+div.append(info, del);
     list.appendChild(div);
   });
 }
